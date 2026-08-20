@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+@theme {
+  --color-background: #08080E;
+  --color-surface:    #0E0E1A;
+  --color-surface-alt:#14141F;
+  --color-border:     #1C1C2E;
+  --color-accent:     #6C63FF;
+  --color-accent-soft:#9B94FF;
+  --color-foreground: #EEEDF5;
+  --color-muted:      #9290AB;
+  --color-subtle:     #52506A;
+  --color-warn:       #F59E0B;
+}
+
+@theme inline {
+  --font-sans:    var(--font-inter,    'Inter',    system-ui, sans-serif);
+  --font-display: var(--font-syne,     'Syne',     system-ui, sans-serif);
+  --font-mono:    var(--font-geist-mono, ui-monospace, 'Courier New', monospace);
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+/* ─── Custom Cursor — hide default on pointer devices ────────── */
+@media (pointer: fine) {
+  body, body * {
+    cursor: none !important;
+  }
+}
+
+/* ─── Selection ──────────────────────────────────────────────── */
+::selection {
+  background-color: color-mix(in srgb, var(--color-accent) 25%, transparent);
+  color: var(--color-foreground);
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-subtle); }
+
+/* ─── Focus ──────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Animated Underline ─────────────────────────────────────── */
+.animated-underline {
+  position: relative;
+  text-decoration: none;
+}
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent);
+  transition: width 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.animated-underline:hover::after {
+  width: 100%;
+}
+
+/* ─── Magnetic Hover Utility ─────────────────────────────────── */
+.magnetic-hover {
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ─── Clip Reveal ────────────────────────────────────────────── */
+.clip-reveal {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.clip-reveal.revealed {
+  clip-path: inset(0 0 0% 0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATION KEYFRAMES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Grid drift — slow translate loop */
+@keyframes grid-drift {
+  0%, 100% { transform: translate(0, 0); }
+  25%      { transform: translate(-15px, -10px); }
+  50%      { transform: translate(-8px, -20px); }
+  75%      { transform: translate(-20px, -5px); }
+}
+.anim-grid-drift {
+  animation: grid-drift 60s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Gradient blobs */
+@keyframes blob-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(40px, -30px) scale(1.05); }
+  66%      { transform: translate(-20px, 20px) scale(0.95); }
+}
+@keyframes blob-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-30px, 25px) scale(0.95); }
+  66%      { transform: translate(25px, -15px) scale(1.05); }
+}
+@keyframes blob-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(30px, -20px) scale(1.03); }
+}
+.anim-blob-1 { animation: blob-1 45s ease-in-out infinite; will-change: transform; }
+.anim-blob-2 { animation: blob-2 50s ease-in-out infinite; will-change: transform; }
+.anim-blob-3 { animation: blob-3 55s ease-in-out infinite; will-change: transform; }
+
+/* Floating particles */
+@keyframes particle-float {
+  0%, 100% { transform: translate(0, 0); opacity: var(--particle-opacity, 0.15); }
+  25%      { transform: translate(15px, -25px); opacity: calc(var(--particle-opacity, 0.15) * 1.3); }
+  50%      { transform: translate(-10px, -40px); opacity: var(--particle-opacity, 0.15); }
+  75%      { transform: translate(20px, -15px); opacity: calc(var(--particle-opacity, 0.15) * 0.7); }
+}
+.anim-particle {
+  animation: particle-float var(--dur, 30s) ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Node breathing */
+@keyframes node-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.025); }
+}
+.anim-breathe {
+  animation: node-breathe 3.5s ease-in-out infinite;
+}
+
+/* Pulse glow ring */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.15); }
+}
+.anim-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Spin slow */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.anim-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* Path draw */
+@keyframes draw-path {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* Connection illuminate */
+@keyframes conn-illuminate {
+  0%, 100% { stroke-opacity: 0.15; }
+  50%      { stroke-opacity: 0.6; }
+}
+
+/* Scale in */
+@keyframes scale-in {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Slide up fade */
+@keyframes slide-up-fade {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* Count increment — used with animation-delay for stagger */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Checkmark draw */
+@keyframes check-draw {
+  from { stroke-dashoffset: 24; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* ─── Reduced Motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .anim-grid-drift,
+  .anim-blob-1, .anim-blob-2, .anim-blob-3,
+  .anim-particle,
+  .anim-breathe,
+  .anim-pulse-glow,
+  .anim-spin-slow {
+    animation: none !important;
+  }
+  /* Restore normal cursor */
+  body, body * {
+    cursor: auto !important;
+  }
+}
